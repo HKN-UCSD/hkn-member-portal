@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 
@@ -9,6 +10,7 @@ import { deleteEvent } from '@Services/EventService';
 
 const DeleteEditButtons = props => {
   const { eventId } = props;
+  const history = useHistory();
 
   const handleDeleteEvent = eventToDeleteId => {
     deleteEvent(eventToDeleteId)
@@ -26,14 +28,17 @@ const DeleteEditButtons = props => {
 
   const confirmButtonProps = {
     name: 'Yes',
-    onClick: handleConfirmDelete,
-    to: ROUTES.CALENDAR,
-    component: Link,
+    onClick: () => {
+      handleConfirmDelete();
+      history.push(ROUTES.CALENDAR);
+    },
+    primary: true,
     positive: true,
   };
 
   const cancelButtonProps = {
     name: 'No',
+    primary: true,
     positive: true,
   };
 
@@ -41,12 +46,14 @@ const DeleteEditButtons = props => {
     <Grid container justify='flex-end' spacing={1}>
       <Grid item>
         <ButtonWithConfirmationModal
-          title='Delete this event?'
-          contentText='Do you want to delete this event permanently?'
-          confirmButtonProps={confirmButtonProps}
-          cancelButtonProps={cancelButtonProps}
+          confirmationModalProps={{
+            title: 'Delete this event?',
+            content: 'Do you want to delete this event permanently?',
+            confirmButtonProps,
+            cancelButtonProps,
+          }}
           name='Delete'
-          secondary
+          primary
           negative
         />
       </Grid>
